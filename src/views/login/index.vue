@@ -6,8 +6,8 @@
       </div>
       <el-form ref="myForm" :model="loginForm" :rules="loginRules" style="margin-top:20px">
         <!-- 手机号 -->
-        <el-form-item prop="mobel">
-          <el-input v-model="loginForm.mobel" placeholder="请输入手机号"></el-input>
+        <el-form-item prop="mobile">
+          <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <!-- 验证码 -->
         <el-form-item prop="code">
@@ -41,12 +41,12 @@ export default {
     }
     return {
       loginForm: {
-        mobel: '',
+        mobile: '',
         code: '',
         aggre: false
       },
       loginRules: {
-        mobel: [{
+        mobile: [{
           required: true, message: '请输入您的手机号'
         },
         {

@@ -52,10 +52,9 @@ export default {
 }
 </script>
 
-<style scoped >
-.title{
+<style scoped lang='less'>
+  .title{
   background-color: #353b4e;
-  height: 45px;
   width: 200px;
 
 }
