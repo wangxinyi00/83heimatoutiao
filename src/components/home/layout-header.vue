@@ -6,15 +6,15 @@
     </el-col>
     <el-col :span="4">
       <img  class='head-img' :src="userInfo.photo ? userInfo.photo : defaultImg" alt />
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click" @command=commonClick>
         <span class="el-dropdown-link">
           {{userInfo.name}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人信息</el-dropdown-item>
-          <el-dropdown-item>git地址</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item command='account'>个人信息</el-dropdown-item>
+          <el-dropdown-item command='git'>git地址</el-dropdown-item>
+          <el-dropdown-item command='lgout'>退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -38,11 +38,22 @@ export default {
       }).then(result => {
         this.userInfo = result.data.data
       }).catch()
+    },
+    commonClick (key) {
+      if (key === 'account') {
+        this.$router.push('/home/account')
+      } else if (key === 'git') {
+        window.location.href = 'https://github.com/shuiruohanyu/83heimatoutiao'
+      } else {
+        window.localStorage.clear()
+        this.$router.push('/login')
+      }
     }
   },
   created () {
     this.getUserInfo()
   }
+
 }
 </script>
 
