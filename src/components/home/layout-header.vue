@@ -31,13 +31,11 @@ export default {
   },
   methods: {
     getUserInfo () {
-      let token = window.localStorage.getItem('user-token')
       this.$axios({
-        url: '/user/profile',
-        headers: { 'Authorization': `Bearer ${token}` }
+        url: '/user/profile'
       }).then(result => {
         this.userInfo = result.data.data
-      }).catch()
+      })
     },
     commonClick (key) {
       if (key === 'account') {
@@ -59,7 +57,6 @@ export default {
 
 <style scoped lang='less'>
 .layout-header{
-    width: 1500px;
     height: 55px;
     .el-icon-s-unfold{
       font-size: 22px

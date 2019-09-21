@@ -27,7 +27,7 @@
       <el-menu-item index="/home/material">素材管理</el-menu-item>
     </el-submenu>
     <!-- 粉丝管理 -->
-     <el-submenu>
+     <el-submenu index='2'>
       <template slot='title'>
         <i class="el-icon-user-solid"></i>
         <span>粉丝管理</span>
@@ -54,9 +54,14 @@ export default {
 </script>
 
 <style scoped lang='less'>
+.layout-aside{
+  height: 100vh;
+  background-color:  #353b4e;
   .title{
   background-color: #353b4e;
   width: 200px;
 
 }
+}
+
 </style>
