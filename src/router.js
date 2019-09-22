@@ -17,8 +17,12 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '',
+          path: '', // 什么都不写默认二级路由组件
           component: Main
+        },
+        {
+          path: 'comment',
+          component: () => import('./views/comment')
         }
       ]
     },
