@@ -1,8 +1,12 @@
 // 对axios进行处理
 import axios from 'axios'
+import jsonBig from 'json-bigint'
 import router from '../permission'
 import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+axios.defaults.transformResponse = [function (data) {
+  return jsonBig.parse(data)
+}]
 // 请求到达后台之前拦截
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('user-token')
