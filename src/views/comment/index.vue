@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-loading='loading'>
     <!-- 面包屑组件 -->
     <bread-crumb slot="header">
       <template slot="title">评论列表</template>
@@ -43,17 +43,20 @@ export default {
         total: 0,
         currentPage: 1,
         pageSize: 10
-      }
+      },
+      loading: false
     }
   },
   methods: {
     getComment () {
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize }
       }).then(result => {
         this.list = result.data.results
         this.page.total = result.data.total_count
+        this.loading = false
       })
     },
     changePage (newPage) {
