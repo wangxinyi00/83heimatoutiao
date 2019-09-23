@@ -3,7 +3,7 @@
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
-    <el-tabs v-model="activeName" @tab-click="getMaterial">
+    <el-tabs v-model="activeName" @tab-click="changeTab">
       <el-tab-pane label="全部素材" name="all">
         <!-- 全部素材 -->
         <div class="img_list">
@@ -15,13 +15,27 @@
             </div>
           </el-card>
         </div>
+        <el-row type="flex" justify="center">
+          <el-pagination background layout="prev, pager, next" :total="page.total"
+            :current-page="page.currentPage"
+            :page-size="page.pageSize"
+            @current-change='changePage '
+          ></el-pagination>
+        </el-row>
       </el-tab-pane>
-      <el-tab-pane  label="收藏素材" name="collect">
+      <el-tab-pane label="收藏素材" name="collect">
         <div class="img_list">
           <el-card class="img_item" v-for="item in list" :key="item.id">
             <img :src="item.url" alt />
           </el-card>
         </div>
+         <el-row type="flex" justify="center">
+          <el-pagination background layout="prev, pager, next" :total="page.total"
+            :current-page="page.currentPage"
+            :page-size="page.pageSize"
+            @current-change='changePage '
+          ></el-pagination>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
   </el-card>
@@ -32,16 +46,34 @@ export default {
   data () {
     return {
       activeName: 'all',
-      list: []
+      list: [],
+      page: {
+        total: 0,
+        currentPage: 1,
+        pageSize: 10
+      }
     }
   },
   methods: {
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      this.getMaterial()
+    },
+    changeTab () {
+      this.page.currentPage = 1
+      this.getMaterial()
+    },
     getMaterial () {
       this.$axios({
         url: 'user/images',
-        params: { collect: this.activeName === 'collect' }
+        params: {
+          collect: this.activeName === 'collect',
+          page: this.page.currentPage,
+          per_page: this.page.pageSize
+        }
       }).then(result => {
         this.list = result.data.results
+        this.page.total = result.data.total_count
       })
     }
   },
