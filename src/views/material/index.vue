@@ -3,6 +3,12 @@
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
+    <div  class="updata">
+    <el-upload  action="" :http-request="uploadImg" :show-file-list='false'>
+        <el-button type="primary" >上传文件</el-button>
+    </el-upload>
+
+    </div>
     <el-tabs v-model="activeName" @tab-click="changeTab">
       <el-tab-pane label="全部素材" name="all">
         <!-- 全部素材 -->
@@ -55,6 +61,17 @@ export default {
     }
   },
   methods: {
+    uploadImg (params) {
+      const data = new FormData()
+      data.append('image', params.file)
+      this.$axios({
+        url: 'user/images',
+        method: 'post',
+        data
+      }).then(() => {
+        this.getMaterial()
+      })
+    },
     changePage (newPage) {
       this.page.currentPage = newPage
       this.getMaterial()
@@ -84,6 +101,12 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.updata{
+    position: absolute;
+    right: 20px;
+    margin-top: -10px;
+
+}
 .img_list {
   display: flex;
   flex-wrap: wrap;
