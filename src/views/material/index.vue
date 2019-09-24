@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-loading='loading'>
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
@@ -16,8 +16,10 @@
           <el-card class="img_item" v-for="item in list" :key="item.id">
             <img :src="item.url" alt />
             <div class="operate">
-              <i :style="{color:item.is_collected ? 'red':'#000'}" class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+              <!-- 收藏和取消收藏 -->
+              <i @click='collectOrCancel(item)' :style="{color:item.is_collected ? 'red':'#000'}" class="el-icon-star-on"></i>
+              <!-- 删除 -->
+              <i @click='delImg(item.id)' class="el-icon-delete-solid"></i>
             </div>
           </el-card>
         </div>
@@ -57,10 +59,36 @@ export default {
         total: 0,
         currentPage: 1,
         pageSize: 10
-      }
+      },
+      loading: false
     }
   },
   methods: {
+    // 取消或者收藏
+    collectOrCancel (item) {
+      let mess = item.is_collected ? '取消' : ''
+      this.$confirm(`您确定要${mess}收藏吗？`).then(() => {
+        this.$axios({
+          url: `/user/images/${item.id}`,
+          method: 'put',
+          data: { collect: !item.is_collected }
+        }).then(() => {
+          this.getMaterial()
+        })
+      })
+    },
+    // 删除图片
+    delImg (id) {
+      this.$confirm('您确定要删除吗？').then(() => {
+        this.$axios({
+          url: `/user/images/${id}`,
+          method: 'delete'
+        }).then(result => {
+          this.getMaterial()
+        })
+      })
+    },
+    // 上传文件
     uploadImg (params) {
       const data = new FormData()
       data.append('image', params.file)
@@ -72,6 +100,7 @@ export default {
         this.getMaterial()
       })
     },
+    // 页码改变时， 传入一个参数
     changePage (newPage) {
       this.page.currentPage = newPage
       this.getMaterial()
@@ -81,6 +110,7 @@ export default {
       this.getMaterial()
     },
     getMaterial () {
+      this.loading = true
       this.$axios({
         url: 'user/images',
         params: {
@@ -91,6 +121,7 @@ export default {
       }).then(result => {
         this.list = result.data.results
         this.page.total = result.data.total_count
+        this.loading = false
       })
     }
   },

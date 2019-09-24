@@ -5,7 +5,7 @@ import router from '../permission'
 import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 axios.defaults.transformResponse = [function (data) {
-  return jsonBig.parse(data)
+  return data ? jsonBig.parse(data) : {}
 }]
 // 请求到达后台之前拦截
 axios.interceptors.request.use(function (config) {
