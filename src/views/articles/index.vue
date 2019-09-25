@@ -36,7 +36,7 @@
     <div class="article-item" v-for="(item,index) in list" :key="index">
       <!-- 左侧 -->
       <div class="left">
-        <img :src="item.cover.images.length ? item.cover.images[0]:defaultImg " alt />
+        <img :src="item.cover.images.length ? item.cover.images[0]:defaultImg " alt="" />
         <div class="info">
           <span style="font-size:14px">{{item.title}}</span>
           <el-tag :type="item.status |statusType" class="status">{{item.status |statusText}}</el-tag>
@@ -48,7 +48,7 @@
         <span>
           <i class="el-icon-edit"></i> 修改
         </span>
-        <span>
+        <span @click="delArticles(item.id)">
           <i class="el-icon-delete"></i>删除
         </span>
       </div>
@@ -61,7 +61,7 @@
       layout="prev, pager, next"
       :page-size='page.pageSize'
       :total="page.total"
-      :current-page="currentPage"
+      :current-page="page.currentPage"
       ></el-pagination>
     </el-row>
   </el-card>
@@ -87,18 +87,33 @@ export default {
     }
   },
   methods: {
+    // 删除文章
+    delArticles (id) {
+      this.$confirm('您确定要删除此文章吗？').then(() => {
+        this.$axios({
+          url: `/articles${id.toString()}`,
+          method: 'delete'
+        }).then(() => {
+          this.queryArticles()
+        })
+      })
+    },
     // 状态变化事件
     changeCondition () {
       this.page.currentPage = 1
       this.queryArticles()
     },
+    // 待条件的查询
     queryArticles () {
       let params = {
         status: this.formData.status === 5 ? null : this.formData.status,
+        channel_id: this.formData.channel_id,
         begin_pubdate:
           this.formData.date.length > 0 ? this.formData.date[0] : null,
         end_pubdate:
-          this.formData.date.length > 1 ? this.formData.date[1] : null
+          this.formData.date.length > 1 ? this.formData.date[1] : null,
+        page: this.page.currentPage,
+        per_page: this.page.pageSize
       }
       this.getArticles(params)
     },
@@ -106,7 +121,7 @@ export default {
     // 获取频道列表
     getChannels () {
       this.$axios({
-        url: 'channels'
+        url: '/channels'
       }).then(result => {
         this.channels = result.data.channels
       })
@@ -154,7 +169,7 @@ export default {
         case 2:
           return 'success'
         case 3:
-          return 'idanger'
+          return 'danger'
         case 4:
           return 'danger'
       }
@@ -201,6 +216,7 @@ export default {
     font-size: 12px;
     span {
       margin-right: 10px;
+      cursor: pointer;
     }
   }
 }
