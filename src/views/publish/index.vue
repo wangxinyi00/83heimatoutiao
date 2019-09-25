@@ -4,13 +4,19 @@
       <template slot="title">发布文章</template>
     </bread-crumb>
     <!-- 菜单 -->
-    <el-form ref="publishForm" :model="formData" :rules="publishRules" style="margin-left:100px" label-width="100px">
+    <el-form
+      ref="publishForm"
+      :model="formData"
+      :rules="publishRules"
+      style="margin-left:100px"
+      label-width="100px"
+    >
       <el-form-item label="标题" prop="title">
         <el-input v-model="formData.title" style="width:800px"></el-input>
       </el-form-item>
 
       <el-form-item label="内容" prop="content">
-        <el-input v-model="formData.content"  type="textarea" :rows="2" placeholder="请输入内容"></el-input>
+        <el-input v-model="formData.content" type="textarea" :rows="2" placeholder="请输入内容"></el-input>
       </el-form-item>
       <el-form-item label="封面" prop="cover">
         <el-radio-group v-model="formData.cover.type">
@@ -21,9 +27,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
-          <el-select v-model="formData.channel_id">
-              <el-option v-for="item in channels" :key='item.id' :label="item.name" :value="item.id"></el-option>
-          </el-select>
+        <el-select v-model="formData.channel_id">
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button @click="publish(false)" type="primary">发布文章</el-button>
@@ -65,17 +71,51 @@ export default {
         this.channels = result.data.channels
       })
     },
+    // 根据文章id获取文章详情
+    getArticleById (articleId) {
+      this.$axios({
+        url: `/articles/${articleId}`
+      }).then(result => {
+        this.formData = result.data
+      })
+    },
     publish (draft) {
       this.$refs.publishForm.validate((isOk) => {
         if (isOk) {
+          let { articleId } = this.$route.params
+
           this.$axios({
-            url: '/articles',
-            method: 'post',
+            url: articleId ? `/articles/${articleId}` : '/articles',
+            method: articleId ? 'put' : 'post',
             params: { draft },
             data: this.formData
           }).then(() => {
+            // 发布成功到到内容列表
             this.$router.push('/home/articles')
           })
+          // 原始代码
+          // if (articleId) {
+          //   // 修改
+          //   this.$axios({
+          //     url: `/articles/${articleId}`,
+          //     method: 'put',
+          //     params: { draft },
+          //     data: this.formData
+          //   }).then(result => {
+          //     // 发布成功到到内容列表
+          //     this.$router.push('/home/articles')
+          //   })
+          // } else {
+          //   this.$axios({
+          //     url: '/articles',
+          //     method: 'post',
+          //     params: { draft },
+          //     data: this.formData
+          //   }).then(() => {
+          //     // 发布成功到到内容列表
+          //     this.$router.push('/home/articles')
+          //   })
+          // }
         }
       })
     }
@@ -83,6 +123,8 @@ export default {
 
   created () {
     this.getChannels()
+    let { articleId } = this.$route.params
+    articleId && this.getArticleById(articleId) // 如果articleId存在才执行后面的逻辑
   }
 
 }

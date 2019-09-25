@@ -45,7 +45,7 @@
       </div>
       <!-- 右侧 -->
       <div class="right">
-        <span>
+      <span @click="goEdit(item.id)">
           <i class="el-icon-edit"></i> 修改
         </span>
         <span @click="delArticles(item.id)">
@@ -87,11 +87,15 @@ export default {
     }
   },
   methods: {
+    goEdit (id) {
+      // 动态路由穿参
+      this.$router.push(`/home/publish/${id.toString()}`)
+    },
     // 删除文章
     delArticles (id) {
       this.$confirm('您确定要删除此文章吗？').then(() => {
         this.$axios({
-          url: `/articles${id.toString()}`,
+          url: `/articles/${id.toString()}`,
           method: 'delete'
         }).then(() => {
           this.queryArticles()
