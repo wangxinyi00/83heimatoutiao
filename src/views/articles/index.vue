@@ -36,7 +36,7 @@
     <div class="article-item" v-for="(item,index) in list" :key="index">
       <!-- 左侧 -->
       <div class="left">
-        <img :src="item.cover.images.length ? item.cover.images[0]:defaultImg " alt="" />
+        <img :src="item.cover.images.length ? item.cover.images[0]:defaultImg " alt />
         <div class="info">
           <span style="font-size:14px">{{item.title}}</span>
           <el-tag :type="item.status |statusType" class="status">{{item.status |statusText}}</el-tag>
@@ -82,7 +82,7 @@ export default {
         date: []
       },
       defaultImg: require('../../assets/img/404.png'),
-      list: [1, 2, 3, 4, 5],
+      list: [],
       channels: []
     }
   },
