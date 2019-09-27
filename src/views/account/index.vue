@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -63,6 +64,7 @@ export default {
       }).then(result => {
         this.formData.photo = result.data.photo
         this.loading = false
+        eventBus.$emit('updateUserInfo')
       })
     },
     // 保存用户个人信息
@@ -75,6 +77,8 @@ export default {
             data: this.formData
           }).then(() => {
             this.$message({ message: '保存成功', type: 'success' })
+            // 提示别的组件 要更新数据
+            eventBus.$emit('updateUserInfo')
           })
         }
       })
