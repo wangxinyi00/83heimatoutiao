@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-loading='loading'>
     <bread-crumb slot="header">
       <template slot="title">发布文章</template>
     </bread-crumb>
@@ -19,13 +19,15 @@
         <quill-editor v-model="formData.content" type="textarea" :rows="2" placeholder="请输入内容"  style="height:300px"></quill-editor>
       </el-form-item>
       <el-form-item label="封面" prop="cover" style="margin-top:120px">
-        <el-radio-group v-model="formData.cover.type">
-          <el-radio :label="1">单选</el-radio>
+        <el-radio-group @change="changeType" v-model="formData.cover.type">
+          <el-radio :label="1">单图</el-radio>
           <el-radio :label="3">三图</el-radio>
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- 封面组件 -->
+      <cover-image @selectImg='changeImg' :images='formData.cover.images'></cover-image>
       <el-form-item label="频道" prop="channel_id">
         <el-select v-model="formData.channel_id">
           <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -43,6 +45,7 @@
 export default {
   data () {
     return {
+      loading: false,
       channels: [],
       formData: {
         title: '', // 标题
@@ -63,6 +66,30 @@ export default {
     }
   },
   methods: {
+    // 接受子组件传过来的值更改images的值
+    changeImg (url, index) {
+      // console.log(9)
+      // this.formData.cover.images[index] = url  错误方法
+      // this.formData.cover.images = this.formData.cover.images.map(function (item, i) {
+      //   if (index === i) {
+      //     // 说明找到要修改的值
+      //     return url
+      //   }
+      //   return item
+      // })
+      this.formData.cover.images = this.formData.cover.images.map((item, i) => i === index ? url : item)
+    },
+    // 类型改变事件
+    changeType () {
+      // 根据type判断images的长度
+      if (this.formData.cover.type === 1) {
+        this.formData.cover.images = ['']
+      } else if (this.formData.cover.type === 3) {
+        this.formData.cover.images = ['', '', '']
+      } else {
+        this.formData.cover.images = []
+      }
+    },
     //   获取频道数据
     getChannels () {
       this.$axios({
@@ -73,10 +100,12 @@ export default {
     },
     // 根据文章id获取文章详情
     getArticleById (articleId) {
+      this.loading = true
       this.$axios({
         url: `/articles/${articleId}`
       }).then(result => {
         this.formData = result.data
+        this.loading = false
       })
     },
     publish (draft) {
