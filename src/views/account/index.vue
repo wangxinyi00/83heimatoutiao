@@ -4,14 +4,14 @@
         <template slot="title"> 账户信息</template>
       </bread-crumb>
     <!-- 表单 -->
-  <el-form style="margin-left:60px" label-width="100px">
-    <el-form-item label="用户名">
+  <el-form ref='account' :rules="accountRules" :model="formData" style="margin-left:60px" label-width="100px">
+    <el-form-item label="用户名" prop="name">
       <el-input v-model="formData.name" style="width:300px"></el-input>
     </el-form-item>
     <el-form-item label="简介">
       <el-input v-model="formData.intro" style="width:300px"></el-input>
     </el-form-item>
-    <el-form-item label="邮箱">
+    <el-form-item label="邮箱" prop="email">
       <el-input v-model="formData.email" style="width:300px"></el-input>
     </el-form-item>
     <el-form-item label="手机号">
@@ -19,7 +19,7 @@
       <el-input disabled v-model="formData.mobile" style="width:300px"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary">保存信息</el-button>
+      <el-button type="primary" @click=" saveUser">保存信息</el-button>
     </el-form-item>
   </el-form>
   <img class="head-img" :src="formData.photo ? formData.photo : defaultImg" alt="">
@@ -34,10 +34,34 @@ export default {
       formData: {
 
       },
-      defaultImg: require('../../assets/img/999.jpeg')
+      defaultImg: require('../../assets/img/999.jpeg'),
+      accountRules: {
+        name: [
+          { min: 1, max: 7, message: '用户名应该控制在1-7个字符之间' },
+          { required: true, message: '用户名不能为空' }
+        ],
+        email: [
+          { pattern: /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/, message: '邮箱格式不正确' },
+          { required: true, message: '邮箱不能为空' }
+        ]
+      }
     }
   },
   methods: {
+    // 保存用户个人信息
+    saveUser () {
+      this.$refs.account.validate((isOk) => {
+        if (isOk) {
+          this.$axios({
+            url: '/user/profile',
+            method: 'patch',
+            data: this.formData
+          }).then(() => {
+            this.$message({ message: '保存成功', type: 'success' })
+          })
+        }
+      })
+    },
     getUserInfo () {
       this.$axios({
         url: '/user/profile'
