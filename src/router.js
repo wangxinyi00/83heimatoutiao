@@ -21,6 +21,7 @@ export default new Router({
           component: Main
         },
         {
+          // 评论列表
           path: 'comment',
           component: () => import('./views/comment')
         },
@@ -33,16 +34,24 @@ export default new Router({
           component: () => import('./views/articles')
         },
         {
+          // 修改文章
           path: 'publish/:articleId',
           component: () => import('./views/publish')
         },
         {
+          // 新建组件
           path: 'publish',
           component: () => import('./views/publish')
         },
         {
+          // 账户信息
           path: 'account',
           component: () => import('./views/account')
+        },
+        {
+          // 图文数据
+          path: 'gradata',
+          component: () => import('./views/fans')
         }
       ]
     },
