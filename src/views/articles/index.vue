@@ -92,15 +92,14 @@ export default {
       this.$router.push(`/home/publish/${id.toString()}`)
     },
     // 删除文章
-    delArticles (id) {
-      this.$confirm('您确定要删除此文章吗？').then(() => {
-        this.$axios({
-          url: `/articles/${id.toString()}`,
-          method: 'delete'
-        }).then(() => {
-          this.queryArticles()
-        })
+    async  delArticles (id) {
+      await this.$confirm('您确定要删除此文章吗？')
+
+      await this.$axios({
+        url: `/articles/${id.toString()}`,
+        method: 'delete'
       })
+      this.queryArticles()
     },
     // 状态变化事件
     changeCondition () {
@@ -123,26 +122,24 @@ export default {
     },
 
     // 获取频道列表
-    getChannels () {
-      this.$axios({
+    async  getChannels () {
+      let result = await this.$axios({
         url: '/channels'
-      }).then(result => {
-        this.channels = result.data.channels
       })
+      this.channels = result.data.channels
     },
     // 切换页码
     changePage (newPage) {
       this.page.currentPage = newPage
       this.queryArticles()
     },
-    getArticles (params) {
-      this.$axios({
+    async  getArticles (params) {
+      let result = await this.$axios({
         url: '/articles',
         params
-      }).then(result => {
-        this.list = result.data.results
-        this.page.total = result.data.total_count
       })
+      this.list = result.data.results
+      this.page.total = result.data.total_count
     }
   },
   created () {

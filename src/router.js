@@ -56,6 +56,11 @@ export default new Router({
           // 图文数据
           path: 'gradata',
           component: () => import('./views/fans')
+        },
+        {
+          // 异步应用
+          path: 'async',
+          component: () => import('./views/async')
         }
       ]
     },

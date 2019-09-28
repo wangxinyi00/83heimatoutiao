@@ -42,6 +42,10 @@
       <i class="el-icon-document"></i>
       <span>账户信息</span>
     </el-menu-item>
+    <el-menu-item index='/home/async'>
+      <i class="el-icon-document"></i>
+      <span>异步应用</span>
+    </el-menu-item>
   </el-menu>
 </div>
 
